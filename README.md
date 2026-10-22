@@ -1,5 +1,9 @@
 # NavidromeBot
 
+<!-- portfolio-card:start -->
+[![Navidrome Bot — Из ссылки в Telegram — в собственную библиотеку.](docs/portfolio/card.png)](docs/portfolio/card.svg)
+<!-- portfolio-card:end -->
+
 Telegram bot for importing uploaded audio and allowed music links into a Navidrome library through `yt-dlp` and `beets`. Deployment is direct on the host: Python venv, systemd, `/srv/music` directories, no Docker.
 
 ## Setup
