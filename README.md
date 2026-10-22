@@ -4,9 +4,19 @@
 [![Navidrome Bot — Из ссылки в Telegram — в собственную библиотеку.](docs/portfolio/card.png)](docs/portfolio/card.svg)
 <!-- portfolio-card:end -->
 
-Telegram bot for importing uploaded audio and allowed music links into a Navidrome library through `yt-dlp` and `beets`. Deployment is direct on the host: Python venv, systemd, `/srv/music` directories, no Docker.
+Отправить музыку в Telegram и добавить её в собственную библиотеку Navidrome. Бот принимает аудиофайлы и разрешённые ссылки, ставит импорт в очередь и сообщает о результате.
 
-## Setup
+Сценарий снимает ручную работу между телефоном и сервером: загрузку из ссылки выполняет `yt-dlp`, импорт в библиотеку обрабатывает `beets`. У задачи есть состояния загрузки, импорта, завершения и ошибки.
+
+## Управление из привычного чата
+
+Основной интерфейс построен на кнопках Telegram. Владелец может менять настройки через бота; они сохраняются в SQLite и имеют приоритет над значениями из `.env`. Доступ задаётся через `OWNER_ID` и необязательный список `ALLOWED_USER_IDS`.
+
+Это пример автоматизации домашнего сервиса с очередью фоновых задач и обработкой внешних утилит. Развёртывание рассчитано на обычный Linux-хост: Python venv, systemd и каталоги `/srv/music`.
+
+Обсудить похожий проект: [sh3l.beer](https://sh3l.beer).
+
+## Установка
 
 ```bash
 python3 -m venv .venv
@@ -16,16 +26,16 @@ pip install -r requirements.txt
 cp .env.example .env
 ```
 
-Fill `BOT_TOKEN`, `OWNER_ID`, and optional `ALLOWED_USER_IDS` in `.env`.
+Заполните `BOT_TOKEN`, `OWNER_ID` и при необходимости `ALLOWED_USER_IDS` в `.env`.
 
-## Runtime Directories
+## Рабочие каталоги
 
 ```bash
 sudo mkdir -p /opt/music-bot /srv/music/incoming /srv/music/library /srv/music/tmp /srv/music/bot-data /srv/music/beets
 sudo chown -R $USER:$USER /opt/music-bot /srv/music
 ```
 
-## Commands
+## Запуск и проверки
 
 ```bash
 python3 -m app.main --check-config
@@ -33,14 +43,10 @@ python3 -m app.main
 pytest
 ```
 
-Install `deploy/music-bot.service` as `/etc/systemd/system/music-bot.service` on the server, then run:
+Для запуска через systemd установите `deploy/music-bot.service` в `/etc/systemd/system/music-bot.service`, затем выполните:
 
 ```bash
 sudo systemctl daemon-reload
 sudo systemctl enable --now music-bot
 journalctl -u music-bot -f
 ```
-
-## Notes
-
-The bot uses ReplyKeyboard menus as the primary UI. Owner settings changed through Telegram are stored in SQLite over `.env` defaults.
