@@ -1,0 +1,14 @@
+directory: /srv/music/library
+library: /srv/music/beets/library.db
+
+import:
+  move: yes
+  write: yes
+  copy: no
+  timid: no
+
+paths:
+  default: $albumartist/$album%aunique{}/$track $title
+  singleton: Singles/$artist/$title
+
+plugins: fetchart embedart fromfilename
